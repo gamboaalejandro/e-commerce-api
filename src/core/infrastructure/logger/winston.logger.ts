@@ -38,7 +38,7 @@ export class WinstonLogger implements ILogger {
   private formatMessage(req: Request | undefined, message: string): string {
     // Comienza con fecha y hora
     let formatted = `${new Date().toISOString().slice(0, 10)} ${new Date().toLocaleTimeString()} `;
-    
+
     // Si hay objeto req, imprime info útil
     if (req) {
       // Esto asume que `req.id` está definido de alguna manera (p.ej., con un middleware).
@@ -55,7 +55,7 @@ export class WinstonLogger implements ILogger {
       // Si no hay req, imprime el raw data
       formatted += `[data: ${JSON.stringify(message)}] `;
     }
-    
+
     // Agrega el mensaje final
     formatted += `[message: ${message}] `;
     return formatted;

@@ -1,1 +1,6 @@
 error: 2025-01-30 11:15:35 PM [reqId: req-1] [message: hay un error acac] 
+error: 2025-01-30 11:17:57 PM [reqId: req-1] [message: el secrete undefined] 
+error: 2025-01-30 11:18:39 PM [reqId: req-1] [message: el secrete supersecretkey] 
+error: 2025-01-30 11:20:30 PM [reqId: req-1] [message: el secrete supersecretkey] 
+error: 2025-01-30 11:25:04 PM [reqId: req-1] [message: el secrete supersecretkey222] 
+error: 2025-01-30 11:25:15 PM [reqId: req-1] [message: el secrete supersecretkey22234] 
