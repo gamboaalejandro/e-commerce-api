@@ -9,9 +9,7 @@
   "parserOptions": {
     "ecmaVersion": "latest",
     "sourceType": "module",
-    "project": [
-      "./tsconfig.json"
-    ]
+    "project": ["./tsconfig.json"]
   },
   "extends": [
     "eslint:recommended",
@@ -20,11 +18,7 @@
     "plugin:import/typescript",
     "plugin:prettier/recommended"
   ],
-  "plugins": [
-    "@typescript-eslint",
-    "import",
-    "prettier"
-  ],
+  "plugins": ["@typescript-eslint", "import", "prettier"],
   "rules": {
     "prettier/prettier": "warn",
     "no-console": "off",
@@ -37,17 +31,10 @@
     "indent": ["error", 4], // define la cantidad de espacio para la identación
     "semi": ["error", "always"], // Exige punto y coma en todas las declaraciones
     "no-multiple-empty-lines": ["error", { "max": 1 }], // Define el número máximo de saltos de línea permitidos
-    "no-unused-vars": "error", // controlar cómo se manejan las variables no utilizadas.
     "no-shadow": "error", // Esta regla previene la declaración de variables que ya están en el ámbito superior, lo que puede causar confusiones y errores
     "prefer-const": "error", // Fomenta el uso de const para variables que no serán reasignadas después de su declaración, mejorando la claridad y la seguridad.
     "no-case-declarations": "off", // Permite realizar declaraciones a switch case
     "no-fallthrough": "off" // Permite la ejecucion en switch case sin breaks
   },
-  "ignorePatterns": [
-    "node_modules",
-    "dist",
-    "build",
-    "coverage",
-    "prisma"
-  ]
+  "ignorePatterns": ["node_modules", "dist", "build", "coverage", "prisma"]
 }

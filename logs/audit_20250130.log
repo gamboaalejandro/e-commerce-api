@@ -1,0 +1,4 @@
+info: 2025-01-30 11:16:41 AM [reqId: req-2] [message: GET /hola] 
+error: 2025-01-30 11:16:41 AM [reqId: req-2] [message: el secrete supersecretkey22234] 
+error: 2025-01-30 2:00:25 PM [reqId: req-1] [request: {"username":"hola","role":1}] [message: Error de validación detectado: [object Object]] 
+error: 2025-01-30 2:01:14 PM [reqId: req-2] [request: {"username":"hola","email":"agamboacj@gmail.com","role":1}] [message: Error de validación detectado: [object Object]] 

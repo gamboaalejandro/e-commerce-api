@@ -8,20 +8,51 @@ import config from './src/core/config';
 import { errorHandler } from './src/core/infrastructure/errors/error_handler';
 import { WinstonLogger } from './src/core/infrastructure/logger/winston.logger';
 import { ILogger } from './src/core/infrastructure/logger/logger';
+import jwtPlugin from './src/core/infrastructure/security/jwt.plugin';
+import { registerAuthRoutes } from './src/auth/infrastructure/router';
+
+import swagger from '@fastify/swagger';
+import swaggerUI from '@fastify/swagger-ui';
+import { registerUserRoutes } from './src/user/infrastructure/router';
 
 export async function buildServer(): Promise<FastifyInstance> {
-  const app = fastify({ logger: false });
+  const app = fastify({ logger: { level: 'debug' } });
 
   /**
    * 1. REGISTRA MIDDLEWARES/PLUGINS GLOBALES
    *    Ejemplo: JWT plugin, CORS, etc.
-   *
    */
+  app.register(swagger, {
+    openapi: {
+      info: {
+        title: 'E-Commerce API',
+        description: 'Documentación de la API de E-Commerce',
+        version: '1.0.0',
+      },
+      servers: [{ url: 'http://localhost:3000' }],
+      tags: [
+        {
+          name: 'Auth',
+          description: 'Endpoints for Authentication',
+        },
+      ],
+    },
+  });
+
+  // 🔹 Configuración de Swagger UI (Interfaz Web)
+  app.register(swaggerUI, {
+    routePrefix: '/docs', // 📌 URL para ver Swagger: http://localhost:3000/docs
+  });
+
+  app.register(jwtPlugin);
 
   /**
    * 2. REGISTRA RUTAS DE CADA MÓDULO
    *    Prefijos recomendados para la organización (ej. '/api/auth')
    */
+  app.register(registerAuthRoutes);
+
+  app.register(registerUserRoutes, { prefix: '/api/user' });
 
   /**
    * 3. MANEJADOR GLOBAL DE ERRORES
@@ -31,7 +62,7 @@ export async function buildServer(): Promise<FastifyInstance> {
   // Definimos un endpoint mínimo
   app.get('/hola', async (req: FastifyRequest, reply: FastifyReply) => {
     logger.info(req, 'GET /hola');
-    logger.error(req, `el secrete ${config.secretKey}`);
+    logger.error(req, `el secret ${config.secretKey}`);
 
     return reply.send({ message: 'Hola Mundo' });
   });
