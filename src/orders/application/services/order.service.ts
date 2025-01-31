@@ -2,6 +2,7 @@ import { Order } from '../../domain/order.entity';
 import { IOrderService } from '../../domain/order.interface';
 import { PaginationDto } from '../../../core/application/dto/pagination.dto';
 import { IOrderRepository } from '../interfaces/order.interface';
+import { OrderState } from '../../domain/order.state';
 
 export class OrderService implements IOrderService {
   constructor(private readonly orderRepository: IOrderRepository) {}
@@ -26,11 +27,21 @@ export class OrderService implements IOrderService {
     return this.orderRepository.listAll(pagination.offset, pagination.limit);
   }
 
-  async updateOrderStatus(id: string, order_state: string): Promise<Order> {
-    return this.orderRepository.update(id, { order_state });
+  async updateOrderStatus(id: string, status: string): Promise<Order> {
+    // Validamos si el estado proporcionado es válido
+    if (!Object.values(OrderState).includes(status as OrderState)) {
+      throw new Error(`Invalid order state: ${status}`);
+    }
+
+    return await this.orderRepository.updateOrderStatus(
+      id,
+      status as OrderState
+    );
   }
 
   async cancelOrder(id: string): Promise<Order> {
-    return this.orderRepository.update(id, { order_state: 'CANCELADO' });
+    return this.orderRepository.update(id, {
+      order_state: OrderState.CANCELADO,
+    });
   }
 }

@@ -1,10 +1,11 @@
+
 export class Order {
   id!: string;
-  user_id!: string;
-  total_price!: number;
-  address?: string;
-  order_type!: 'pickup' | 'delivery';
-  order_state!: 'PENDIENTE' | 'EN_PROCESO' | 'FINALIZADO' | 'CANCELADO';
+  user_id!: string | null;
+  total_price!: number | null;
+  address?: string | null;
+  order_type!: OrderType;
+  order_state?: OrderState | null;
   created_at!: Date;
   updated_at!: Date;
   deleted_at?: Date | null;
@@ -12,9 +13,20 @@ export class Order {
   constructor(partial: Partial<Order>) {
     Object.assign(this, {
       ...partial,
-      order_state: partial.order_state ?? 'PENDIENTE', // Estado predeterminado
-      created_at: partial.created_at ?? new Date(),
-      updated_at: partial.updated_at ?? new Date(),
+      address: partial.address ?? undefined,
+      order_state: partial.order_state ?? undefined, 
     });
   }
 }
+
+export enum OrderType {
+    PICKUP = 'pickup',
+    DELIVERY = 'delivery',
+  }
+  
+  export enum OrderState {
+    PENDIENTE = 'PENDIENTE',
+    EN_PROCESO = 'EN_PROCESO',
+    FINALIZADO = 'FINALIZADO',
+    CANCELADO = 'CANCELADO',
+  }

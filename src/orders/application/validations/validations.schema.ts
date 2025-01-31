@@ -1,10 +1,9 @@
 export const createOrderSchema = {
   description: 'Crear una nueva orden',
   tags: ['Order'],
-  security: [{ bearerAuth: [] }],
   body: {
     type: 'object',
-    security: [{ bearerAuth: [] }],
+
     required: ['user_id', 'total_price', 'order_type', 'products'],
     properties: {
       user_id: { type: 'string', format: 'uuid' },
@@ -45,7 +44,7 @@ export const createOrderSchema = {
 export const getOrderByIdSchema = {
   description: 'Obtener una orden por su ID',
   tags: ['Order'],
-  security: [{ bearerAuth: [] }],
+
   params: {
     type: 'object',
     properties: {
@@ -91,7 +90,7 @@ export const getOrderByIdSchema = {
 };
 export const updateOrderSchema = {
   description: 'Actualizar una orden existente',
-  security: [{ bearerAuth: [] }],
+
   tags: ['Order'],
   params: {
     type: 'object',
@@ -139,7 +138,6 @@ export const updateOrderSchema = {
 export const deleteOrderSchema = {
   description: 'Eliminar una orden por su ID',
   tags: ['Order'],
-  security: [{ bearerAuth: [] }],
   params: {
     type: 'object',
     properties: {
@@ -166,7 +164,6 @@ export const deleteOrderSchema = {
 
 export const getAllOrdersSchema = {
   description: 'Obtener la lista de órdenes con paginación',
-  security: [{ bearerAuth: [] }],
   tags: ['Order'],
   querystring: {
     type: 'object',
@@ -198,7 +195,6 @@ export const getAllOrdersSchema = {
 export const updateOrderStatusSchema = {
   description: 'Actualizar solo el estado de una orden',
   tags: ['Order'],
-  security: [{ bearerAuth: [] }],
   params: {
     type: 'object',
     properties: {
@@ -241,7 +237,6 @@ export const updateOrderStatusSchema = {
 export const cancelOrderSchema = {
   description: 'Cancelar una orden cambiando su estado a CANCELADO',
   tags: ['Order'],
-  security: [{ bearerAuth: [] }],
   params: {
     type: 'object',
     properties: {
