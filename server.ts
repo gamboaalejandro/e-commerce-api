@@ -55,6 +55,7 @@ export async function buildServer(): Promise<FastifyInstance> {
 
   app.register(registerUserRoutes, { prefix: '/api/user' });
   app.register(registerProductRoutes, { prefix: '/api/product' });
+  app.register(re)
 
   /**
    * 3. MANEJADOR GLOBAL DE ERRORES

@@ -11,10 +11,11 @@ import {
   cancelOrderSchema,
 } from '../../application/validations/validations.schema';
 import { OrderController } from './order.controller';
+import { OrderRepository } from '../repositories/order.repository';
 
 export async function registerOrderRoutes(fastify: FastifyInstance) {
-  //const orderRepositoryInstance = new OrderRepository();
-  const orderServiceInstance = new OrderService(null);
+  const orderRepositoryInstance = new OrderRepository();
+  const orderServiceInstance = new OrderService(orderRepositoryInstance);
   const orderControllerInstance = new OrderController(orderServiceInstance);
 
   fastify.post(
@@ -44,7 +45,7 @@ export async function registerOrderRoutes(fastify: FastifyInstance) {
   fastify.get(
     '/orders',
     { schema: getAllOrdersSchema },
-    orderControllerInstance.getAllOrders.bind(orderControllerInstance)
+    orderControllerInstance.listOrders.bind(orderControllerInstance)
   );
 
   fastify.patch(
