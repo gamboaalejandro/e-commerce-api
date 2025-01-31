@@ -14,6 +14,7 @@ import { registerAuthRoutes } from './src/auth/infrastructure/router';
 import swagger from '@fastify/swagger';
 import swaggerUI from '@fastify/swagger-ui';
 import { registerUserRoutes } from './src/user/infrastructure/router';
+import { registerProductRoutes } from './src/products/infrastructure/router';
 
 export async function buildServer(): Promise<FastifyInstance> {
   const app = fastify({ logger: { level: 'debug' } });
@@ -53,6 +54,7 @@ export async function buildServer(): Promise<FastifyInstance> {
   app.register(registerAuthRoutes);
 
   app.register(registerUserRoutes, { prefix: '/api/user' });
+  app.register(registerProductRoutes, { prefix: '/api/product' });
 
   /**
    * 3. MANEJADOR GLOBAL DE ERRORES
