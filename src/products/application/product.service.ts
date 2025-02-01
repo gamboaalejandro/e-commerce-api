@@ -1,13 +1,19 @@
+import { NotFoundError } from '../../core/infrastructure/errors/custom_errors/not_found.error';
 import { Product } from '../domain/product.entity';
 import { IProductService } from './interfaces/product.interface';
 import { IProductRepository } from './interfaces/product.repository';
+import { PaginationDto } from '../../core/application/dto/pagination.dto';
 
 export class ProductService implements IProductService {
   constructor(private readonly productRepository: IProductRepository) {}
-
+  listAll(pagination: PaginationDto): Promise<Product[]> {
+    return this.productRepository.listAll(pagination);
+  }
   async createProduct(data: Partial<Product>): Promise<Product> {
-    const existingProduct = await this.productRepository.listAll(0, 1); // Verificar si existe uno similar
-    if (existingProduct.some((p) => p.name === data.name)) {
+    const existingProduct = await this.productRepository.findByName(
+      data.name ?? ''
+    );
+    if (existingProduct) {
       throw new Error('Product with this name already exists');
     }
 
@@ -17,7 +23,7 @@ export class ProductService implements IProductService {
   async getProductById(id: string): Promise<Product> {
     const product = await this.productRepository.findById(id);
     if (!product) {
-      throw new Error('Product not found');
+      throw new NotFoundError('Product not found');
     }
     return product;
   }
@@ -25,7 +31,7 @@ export class ProductService implements IProductService {
   async updateProduct(id: string, data: Partial<Product>): Promise<Product> {
     const existingProduct = await this.productRepository.findById(id);
     if (!existingProduct) {
-      throw new Error('Product not found');
+      throw new NotFoundError('Product not found');
     }
 
     return await this.productRepository.update(id, data);
@@ -34,13 +40,9 @@ export class ProductService implements IProductService {
   async deleteProduct(id: string): Promise<void> {
     const existingProduct = await this.productRepository.findById(id);
     if (!existingProduct) {
-      throw new Error('Product not found');
+      throw new NotFoundError('Product not found');
     }
 
     await this.productRepository.delete(id);
-  }
-
-  async listProducts(offset: number, limit: number): Promise<Product[]> {
-    return await this.productRepository.listAll(offset, limit);
   }
 }

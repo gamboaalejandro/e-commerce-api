@@ -1,3 +1,4 @@
+import { PaginationDto } from '../../../core/application/dto/pagination.dto';
 import { Product } from '../../domain/product.entity';
 
 export interface IProductRepository {
@@ -5,5 +6,6 @@ export interface IProductRepository {
   findById(id: string): Promise<Product | null>;
   update(id: string, product: Partial<Product>): Promise<Product>;
   delete(id: string): Promise<void>;
-  listAll(skip: number, take: number): Promise<Product[]>;
+  listAll(pagination: PaginationDto): Promise<Product[]>;
+  findByName(name: string): Promise<Product | null>;
 }

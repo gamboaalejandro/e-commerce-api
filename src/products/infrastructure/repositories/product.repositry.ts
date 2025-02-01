@@ -1,10 +1,17 @@
 import { PrismaClient } from '@prisma/client';
 import { Product } from '../../domain/product.entity';
 import { IProductRepository } from '../../application/interfaces/product.repository';
+import { PaginationDto } from '../../../core/application/dto/pagination.dto';
 
 const prisma = new PrismaClient();
 
 export default class ProductRepository implements IProductRepository {
+  findByName(name: string): Promise<Product | null> {
+    const product = prisma.product.findUnique({
+      where: { name },
+    });
+    return product;
+  }
   async create(product: Partial<Product>): Promise<Product> {
     const newProduct = await prisma.product.create({
       data: {
@@ -45,11 +52,11 @@ export default class ProductRepository implements IProductRepository {
     });
   }
 
-  async listAll(skip: number, take: number): Promise<Product[]> {
+  async listAll(pagination: PaginationDto): Promise<Product[]> {
     const products = await prisma.product.findMany({
-      where: { deleted_at: null },
-      skip,
-      take,
+      where: { deleted_at: null, is_active: true },
+      skip: pagination.offset,
+      take: pagination.limit,
     });
     return products.map(this.mapToEntity);
   }

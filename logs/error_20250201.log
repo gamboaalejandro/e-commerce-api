@@ -1,0 +1,6 @@
+error: 2025-02-01 1:08:03 AM (POST /api/user/update/2) [path: /api/user/update/2] [request: {}] [message: Error no controlado: SyntaxError: Expected double-quoted property name in JSON at position 62] 
+error: 2025-02-01 1:09:32 AM (GET /api/user/) [path: /api/user/] [request: {"username":"holadd","password":"pass123"}] [message: Error no controlado: Error: Method not implemented.] 
+error: 2025-02-01 1:10:34 AM (GET /api/user/) [path: /api/user/] [request: {"username":"holadd","password":"pass123"}] [message: METODO NO IMPLEMENTADO] 
+error: 2025-02-01 10:44:49 AM (POST /api/user/update/744749e7-794c-4415-95d7-e7c9285ae0a9) [path: /api/user/update/744749e7-794c-4415-95d7-e7c9285ae0a9] [request: {"username":"holadd","password":"pass123"}] [message: Error no controlado: Error [ERR_HTTP_HEADERS_SENT]: Cannot set headers after they are sent to the client] 
+error: 2025-02-01 10:48:50 AM (POST /api/user/update/744749e7-794c-4415-95d7-e7c9285ae0a9) [path: /api/user/update/744749e7-794c-4415-95d7-e7c9285ae0a9] [request: {"username":"holadd","password":"pass123"}] [message: No tienes permisos para realizar esta acción] 
+error: 2025-02-01 1:25:01 PM (POST /api/auth/login) [path: /api/auth/login] [request: {"username":"user123","password":"password123"}] [message: User not found] 

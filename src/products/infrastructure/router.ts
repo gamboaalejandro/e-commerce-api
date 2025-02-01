@@ -1,51 +1,67 @@
-import { FastifyInstance } from 'fastify';
+import { Router } from 'express';
+import { ProductController } from './controllers/product.controller';
 import ProductRepository from './repositories/product.repositry';
 import { ProductService } from '../application/product.service';
-import { ProductController } from './controllers/product.controller';
+import { validateRequest } from '../../core/application/validate_request';
 import {
-  createProductSchema,
-  deleteProductSchema,
-  getAllProductsSchema,
-  getProductSchema,
-  updateProductSchema,
+  createProductValidator,
+  getProductValidator,
+  updateProductValidator,
+  deleteProductValidator,
+  getAllProductsValidator,
 } from '../application/validations/validations.schemas';
+import { authenticateJWT } from '../../core/infrastructure/middleware/jwt.middleware';
+import { authorizeRole } from '../../core/infrastructure/middleware/authorization.middleware';
 
-export async function registerProductRoutes(fastify: FastifyInstance) {
-  const productRepositoryInstance = new ProductRepository();
-  const productServiceInstance = new ProductService(productRepositoryInstance);
-  const productControllerInstance = new ProductController(
-    productServiceInstance
-  );
+const productRouter = Router();
 
-  fastify.get(
-    '/products',
-    {
-      schema: getAllProductsSchema,
-    },
-    productControllerInstance.listProducts.bind(productControllerInstance)
-  );
+const productRepository = new ProductRepository();
+const productService = new ProductService(productRepository);
+const productController = new ProductController(productService);
 
-  fastify.post(
-    '/',
-    { schema: createProductSchema },
-    productControllerInstance.createProduct.bind(productControllerInstance)
-  );
+productRouter.post(
+  '/',
+  authenticateJWT,
+  authorizeRole([1]),
+  createProductValidator,
+  validateRequest,
+  productController.createProduct.bind(productController)
+);
 
-  fastify.get(
-    '/:id',
-    { schema: getProductSchema },
-    productControllerInstance.getProductById.bind(productControllerInstance)
-  );
+productRouter.get(
+  '/:id',
+  authenticateJWT,
+  authorizeRole([1]),
+  getProductValidator,
+  validateRequest,
+  productController.getProductById.bind(productController)
+);
 
-  fastify.put(
-    '/:id',
-    { schema: updateProductSchema },
-    productControllerInstance.updateProduct.bind(productControllerInstance)
-  );
+productRouter.put(
+  '/:id',
+  authenticateJWT,
+  authorizeRole([1]),
+  updateProductValidator,
+  validateRequest,
+  productController.updateProduct.bind(productController)
+);
 
-  fastify.delete(
-    '/:id',
-    { schema: deleteProductSchema },
-    productControllerInstance.deleteProduct.bind(productControllerInstance)
-  );
-}
+productRouter.delete(
+  '/:id',
+  authenticateJWT,
+  authorizeRole([1]),
+  deleteProductValidator,
+  validateRequest,
+  productController.deleteProduct.bind(productController)
+);
+
+productRouter.get(
+  '/',
+  authenticateJWT,
+  authorizeRole([1]),
+  getAllProductsValidator,
+  validateRequest,
+  productController.listProducts.bind(productController)
+);
+
+export default productRouter;

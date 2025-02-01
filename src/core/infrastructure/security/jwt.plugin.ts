@@ -1,14 +1,11 @@
-import fastify_plugin from 'fastify-plugin';
 import { FastifyInstance, FastifyReply, FastifyRequest } from 'fastify';
 import jwt from '@fastify/jwt';
 import config from '../../config';
 import { UnauthorizedError } from '../errors/custom_errors/unauthorized.error';
 import { WinstonLogger } from '../logger/winston.logger';
 const logger = new WinstonLogger();
-
-export default fastify_plugin(async function jwtPlugin(
-  fastify: FastifyInstance
-) {
+export default async function jwtPlugin(fastify: FastifyInstance) {
+  console.log('REGISTRANDO ');
   fastify.register(jwt, {
     secret: config.jwtSecret, // algo como "superSecretKey"
   });
@@ -18,12 +15,14 @@ export default fastify_plugin(async function jwtPlugin(
     'authenticate',
     async function (request: FastifyRequest, reply: FastifyReply) {
       try {
-        await request.jwtVerify();
+        const token = request.headers.authorization;
+        console.log(token);
+        await request.jwtVerify(); // Verifica el token JWT
       } catch (err) {
+        console.log(err);
         logger.error(request, 'Unauthorized access');
-        logger.error(request, `ERROR: ${err}`);
-        reply.code(401).send(new UnauthorizedError());
+        reply.code(401).send(new UnauthorizedError()); // Si no se valida, responde con 401 Unauthorized
       }
     }
   );
-});
+}

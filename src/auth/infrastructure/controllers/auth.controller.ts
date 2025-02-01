@@ -1,4 +1,4 @@
-import { FastifyReply, FastifyRequest } from 'fastify';
+import { Request, Response, NextFunction } from 'express';
 import { IAuthService } from '../../domain/auth.interface';
 import { SuccessResponse } from '../../application/dto/response_login.dto';
 import { User } from '../../../user/domain/user.entity';
@@ -6,26 +6,25 @@ import { User } from '../../../user/domain/user.entity';
 export class AuthController {
   constructor(private readonly authService: IAuthService) {}
 
-  async login(request: FastifyRequest, reply: FastifyReply) {
+  async login(req: Request, res: Response, next: NextFunction) {
     try {
-      const { username, password } = request.body as {
+      const { username, password } = req.body as {
         username: string;
         password: string;
       };
-      const response = await this.authService.login({
-        username: username,
-        password: password,
-      });
-      return reply.code(200).send(JSON.stringify(response, null, 2));
+
+      const response = await this.authService.login({ username, password });
+
+      res.status(200).json(response);
     } catch (error) {
-      console.log(error);
-      throw error;
+      console.error(error);
+      next(error); // ✅ Enviamos el error al `errorHandler`
     }
   }
 
-  async register(request: FastifyRequest, reply: FastifyReply) {
+  async register(req: Request, res: Response, next: NextFunction) {
     try {
-      const { username, password, email, address, role } = request.body as {
+      const { username, password, email, address, role } = req.body as {
         username: string;
         password: string;
         email: string;
@@ -43,10 +42,10 @@ export class AuthController {
 
       const response = new SuccessResponse<Partial<User>>(user);
 
-      reply.send(JSON.stringify(response, null, 2));
+      res.status(201).json(response);
     } catch (error) {
       console.log(error);
-      throw error;
+      next(error); // ✅ Enviamos el error al `errorHandler`
     }
   }
 }

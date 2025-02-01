@@ -1,6 +1,6 @@
 import winston from 'winston';
 import DailyRotateFile from 'winston-daily-rotate-file';
-import { FastifyRequest as Request } from 'fastify'; // O  si usas Fastify
+import { Request } from 'express';
 import { ILogger } from './logger';
 
 const fileRotateTransportError = new DailyRotateFile({
@@ -41,9 +41,7 @@ export class WinstonLogger implements ILogger {
 
     // Si hay objeto req, imprime info útil
     if (req) {
-      // Esto asume que `req.id` está definido de alguna manera (p.ej., con un middleware).
-      // Si no lo tienes, elimínalo o cámbialo por algo que exista.
-      formatted += `[reqId: ${req['id'] ?? 'n/a'}] `;
+      formatted += `(${req.method} ${req.url}) `;
       if ('path' in req) {
         formatted += `[path: ${req['path']}] `;
       }

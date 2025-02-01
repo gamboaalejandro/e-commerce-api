@@ -1,5 +1,4 @@
-import { FastifyRequest as Request } from 'fastify';
-
+import { Request } from 'express';
 export interface ILogger {
   log(level: string, req: Request | undefined, message: string): void;
   error(req: Request | undefined, message: string): void;

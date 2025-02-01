@@ -1,45 +1,60 @@
-import { FastifyInstance } from 'fastify';
+import { Router } from 'express';
 import UserRepository from './repositories/user.repository';
 import { UserController } from './controllers/user.controller';
 import { UserService } from '../application/user.service';
 import {
-  deleteUserSchema,
-  getAllUsersSchema,
-  getCurrentUserSchema,
-  updateUserSchema,
+  updateUserValidator,
+  deleteUserValidator,
+  getAllUsersValidator,
+  getCurrentUserValidator,
 } from '../application/validations/validation.schema';
+import { validateRequest } from '../../core/application/validate_request';
+import { authenticateJWT } from '../../core/infrastructure/middleware/jwt.middleware';
+import { authorizeRole } from '../../core/infrastructure/middleware/authorization.middleware';
 
-export async function registerUserRoutes(fastify: FastifyInstance) {
-  const userRepositoryInstance = new UserRepository();
-  const userServiceInstance = new UserService(userRepositoryInstance, fastify);
-  const userControllerInstance = new UserController(userServiceInstance);
+const userRouter = Router();
 
-  fastify.post(
-    '/update/:id',
-    {
-      schema: updateUserSchema,
-    },
-    userControllerInstance.updateUser.bind(userControllerInstance)
-  );
-  fastify.post(
-    '/delete/:id',
-    {
-      schema: deleteUserSchema,
-    },
-    userControllerInstance.deleteUser.bind(userControllerInstance)
-  );
+const userRepositoryInstance = new UserRepository();
+const userServiceInstance = new UserService(userRepositoryInstance);
+const userControllerInstance = new UserController(userServiceInstance);
 
-  // Obtener todos los usuarios con paginación
-  fastify.get(
-    '/',
-    { schema: getAllUsersSchema },
-    userControllerInstance.getAllUsers.bind(userControllerInstance)
-  );
+// Rutas para actualizar y eliminar usuario
+userRouter.post(
+  '/update/:id',
+  authenticateJWT,
+  authorizeRole([1]),
+  updateUserValidator,
+  validateRequest,
+  userControllerInstance.updateUser.bind(userControllerInstance)
+);
 
-  // Obtener un usuario por ID
-  fastify.get(
-    '/:id',
-    { schema: getCurrentUserSchema },
-    userControllerInstance.getCurrentUser.bind(userControllerInstance)
-  );
-}
+userRouter.delete(
+  '/delete/:id',
+  authenticateJWT,
+  authorizeRole([1]),
+  deleteUserValidator,
+  validateRequest,
+  userControllerInstance.deleteUser.bind(userControllerInstance)
+);
+
+// Obtener todos los usuarios con paginación
+userRouter.get(
+  '/',
+  authenticateJWT,
+  authorizeRole([1]),
+  getAllUsersValidator,
+  validateRequest,
+  userControllerInstance.getAllUsers.bind(userControllerInstance)
+);
+
+// Obtener un usuario por ID
+userRouter.get(
+  '/:id',
+  authenticateJWT,
+  authorizeRole([1, 2]),
+  getCurrentUserValidator,
+  validateRequest,
+  userControllerInstance.getCurrentUser.bind(userControllerInstance)
+);
+
+export default userRouter;

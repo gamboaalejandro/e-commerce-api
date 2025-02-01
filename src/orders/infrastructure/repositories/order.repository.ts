@@ -1,4 +1,9 @@
-import { PrismaClient, Order as PrismaOrder, OrderType as PrismaOrderType, OrderState as PrismaOrderState } from '@prisma/client';
+import {
+  PrismaClient,
+  Order as PrismaOrder,
+  OrderType as PrismaOrderType,
+  OrderState as PrismaOrderState,
+} from '@prisma/client';
 import { Order, OrderType } from '../../domain/order.entity';
 import { IOrderRepository } from '../../application/interfaces/order.interface';
 import { OrderState } from '../../domain/order.state';
@@ -12,9 +17,13 @@ export class OrderRepository implements IOrderRepository {
       data: {
         user_id: orderData.user_id!,
         total_price: orderData.total_price!,
-        address: orderData.address ?? null, 
-        order_type: this.mapToPrismaOrderType(orderData.order_type ?? OrderType.PICKUP), // 🔹 Aseguramos que si no es por delivery se asume pickup
-        order_state: this.mapToPrismaOrderState(orderData.order_state ?? OrderState.PENDIENTE), // todas las órdenes empiezan en estado pendiente
+        address: orderData.address ?? null,
+        order_type: this.mapToPrismaOrderType(
+          orderData.order_type ?? OrderType.PICKUP
+        ), // 🔹 Aseguramos que si no es por delivery se asume pickup
+        order_state: this.mapToPrismaOrderState(
+          orderData.order_state ?? OrderState.PENDIENTE
+        ), // todas las órdenes empiezan en estado pendiente
       },
     });
 
@@ -41,7 +50,9 @@ export class OrderRepository implements IOrderRepository {
       data: {
         ...updateData,
         address: updateData.address ?? null,
-        order_state: updateData.order_state ? this.mapToPrismaOrderState(updateData.order_state) : undefined,
+        order_state: updateData.order_state
+          ? this.mapToPrismaOrderState(updateData.order_state)
+          : undefined,
       },
     });
 
@@ -81,19 +92,24 @@ export class OrderRepository implements IOrderRepository {
   }
   // 🔹 Métodos de conversión entre enums
   private mapToPrismaOrderType(orderType: OrderType): PrismaOrderType {
-    return orderType === OrderType.PICKUP ? PrismaOrderType.pickup : PrismaOrderType.delivery;
+    return orderType === OrderType.PICKUP
+      ? PrismaOrderType.pickup
+      : PrismaOrderType.delivery;
   }
 
   private mapToDomainOrderType(prismaOrderType: PrismaOrderType): OrderType {
-    return prismaOrderType === PrismaOrderType.pickup ? OrderType.PICKUP : OrderType.DELIVERY;
+    return prismaOrderType === PrismaOrderType.pickup
+      ? OrderType.PICKUP
+      : OrderType.DELIVERY;
   }
 
   private mapToPrismaOrderState(orderState: OrderState): PrismaOrderState {
     return orderState as PrismaOrderState;
   }
 
-  private mapToDomainOrderState(prismaOrderState: PrismaOrderState | null): OrderState | null {
+  private mapToDomainOrderState(
+    prismaOrderState: PrismaOrderState | null
+  ): OrderState | null {
     return prismaOrderState as OrderState | null;
   }
-  
 }

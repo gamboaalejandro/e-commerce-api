@@ -15,5 +15,7 @@
     "emitDecoratorMetadata": true
   },
   "exclude": ["node_modules", "coverage", "build", "src/test"],
-  "include": ["./**/*.ts"]
+  "include": ["./**/*.ts"],
+  "typeRoots": ["./src/types", "./node_modules/@types"]
+
 }

@@ -1,57 +1,59 @@
-import { FastifyReply, FastifyRequest } from 'fastify';
+import { Request, Response, NextFunction } from 'express';
 import { IUserService } from '../../domain/user.interface';
 import { PaginationDto } from '../../../core/application/dto/pagination.dto';
 
 export class UserController {
   constructor(private readonly userService: IUserService) {}
 
-  async updateUser(request: FastifyRequest, reply: FastifyReply) {
+  async updateUser(req: Request, res: Response, next: NextFunction) {
     try {
-      return reply.code(200).send({ message: 'User updated' });
+      res.status(200).json({ message: 'User updated' });
     } catch (error) {
-      console.log(error);
-      throw error;
+      console.error(error);
+      next(error); // ✅ Usa next() para que el middleware de errores lo maneje
     }
   }
 
-  async deleteUser(request: FastifyRequest, reply: FastifyReply) {
+  async deleteUser(req: Request, res: Response, next: NextFunction) {
     try {
-      reply.send({ message: 'User deleted' });
+      res.json({ message: 'User deleted' });
     } catch (error) {
-      console.log(error);
-      throw error;
+      console.error(error);
+      next(error);
     }
   }
-  async getAllUsers(request: FastifyRequest, reply: FastifyReply) {
+
+  async getAllUsers(req: Request, res: Response, next: NextFunction) {
     try {
-      const { offset = 1, limit = 10 } = request.query as {
-        offset: number;
-        limit: number;
-      };
-      const pagination: PaginationDto = { offset, limit };
+      const offset = Number(req.query.offset) || 1; // ✅ Convierte a número y asigna un valor por defecto
+      const limit = Number(req.query.limit) || 10; // ✅ Convierte a número y asigna un valor por defecto
+
+      const pagination: PaginationDto = { offset: offset, limit: limit };
 
       const users = await this.userService.getAllUsers(pagination);
-      reply.send(users);
+      res.json(users);
     } catch (error) {
-      console.log(error);
-      reply.status(500).send({ message: 'Error fetching users', error: error });
+      console.error(error);
+      next(error);
     }
   }
 
-  async getCurrentUser(request: FastifyRequest, reply: FastifyReply) {
+  async getCurrentUser(req: Request, res: Response, next: NextFunction) {
     try {
-      const { id } = request.params as { id: string };
+      const { id } = req.params as { id: string };
       const user = await this.userService.getCurrentUser(id);
+
       if (!user) {
-        return reply.status(404).send({
+        res.status(404).json({
           error: 'NotFoundError',
           message: 'User not found',
           statusCode: 404,
         });
       }
-      reply.send(user);
+
+      res.json(user);
     } catch (error) {
-      reply.status(500).send({ message: 'Error fetching user', error: error });
+      next(error);
     }
   }
 }

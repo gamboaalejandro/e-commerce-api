@@ -1,181 +1,77 @@
-export const createUserSchema = {
-  description: 'Registro de un nuevo usuario',
-  tags: ['Auth'],
-  body: {
-    type: 'object',
-    required: ['username', 'email', 'password'],
+import { body, param, query } from 'express-validator';
 
-    properties: {
-      username: { type: 'string', minLength: 3 },
-      address: { type: ['string'] }, //
-      email: { type: 'string', format: 'email' },
-      password: { type: 'string', minLength: 6 },
-      role: { type: 'integer', default: 1 },
-    },
-  },
-  response: {
-    201: {
-      description: 'Usuario creado exitosamente',
-      type: 'object',
-      properties: {
-        id: { type: 'string' },
-        username: { type: 'string' },
-        email: { type: 'string' },
-        role: { type: 'integer' },
-        createdAt: { type: 'string', format: 'date-time' },
-      },
-    },
-    409: {
-      description: 'El usuario ya existe (email o username en uso)',
-      type: 'object',
-      oneOf: [
-        {
-          properties: {
-            error: { type: 'string', example: 'ConflictError' },
-            message: { type: 'string', example: 'User email already exists' },
-            statusCode: { type: 'integer', example: 409 },
-          },
-        },
-        {
-          properties: {
-            error: { type: 'string', example: 'ConflictError' },
-            message: { type: 'string', example: 'Username already exists' },
-            statusCode: { type: 'integer', example: 409 },
-          },
-        },
-      ],
-    },
-  },
-};
+/**
+ * ✅ Validación para crear un usuario
+ */
+export const createUserValidator = [
+  body('username')
+    .isString()
+    .isLength({ min: 3 })
+    .withMessage('Username must be at least 3 characters long'),
+  body('address').optional().isString().withMessage('Address must be a string'),
+  body('email').isEmail().withMessage('Invalid email format'),
+  body('password')
+    .isLength({ min: 6 })
+    .withMessage('Password must be at least 6 characters long'),
+  body('role').optional().isInt().withMessage('Role must be an integer'),
+];
 
-export const updateUserSchema = {
-  description: 'Actualización de datos del usuario',
-  tags: ['Users'],
-  params: {
-    type: 'object',
-    properties: {
-      id: { type: 'string', format: 'uuid' },
-    },
-    required: ['id'],
-  },
-  body: {
-    type: 'object',
-    properties: {
-      username: { type: 'string', minLength: 3, nullable: true },
-      address: { type: 'string', nullable: true },
-      email: { type: 'string', format: 'email', nullable: true },
-    },
-  },
-  response: {
-    200: {
-      description: 'Usuario actualizado correctamente',
-      type: 'object',
-      properties: {
-        status: { type: 'integer', example: 200 },
-        message: { type: 'string', example: 'User updated successfully' },
-      },
-    },
-    404: {
-      description: 'Usuario no encontrado',
-      type: 'object',
-      properties: {
-        error: { type: 'string', example: 'NotFoundError' },
-        message: { type: 'string', example: 'User not found' },
-        statusCode: { type: 'integer', example: 404 },
-      },
-    },
-  },
-};
+/**
+ * ✅ Validación para actualizar un usuario
+ */
+export const updateUserValidator = [
+  param('id').isUUID().withMessage('Invalid user ID format'),
+  body('username')
+    .optional()
+    .isString()
+    .isLength({ min: 3 })
+    .withMessage('Username must be at least 3 characters long'),
+  body('address').optional().isString().withMessage('Address must be a string'),
+  body('email').optional().isEmail().withMessage('Invalid email format'),
+];
 
-export const deleteUserSchema = {
-  description: 'Eliminación de un usuario',
-  tags: ['Users'],
-  params: {
-    type: 'object',
-    properties: {
-      id: { type: 'string', format: 'uuid' },
-    },
-    required: ['id'],
-  },
-  response: {
-    200: {
-      description: 'Usuario eliminado correctamente',
-      type: 'object',
-      properties: {
-        status: { type: 'integer', example: 200 },
-        message: { type: 'string', example: 'User deleted successfully' },
-      },
-    },
-    404: {
-      description: 'Usuario no encontrado',
-      type: 'object',
-      properties: {
-        error: { type: 'string', example: 'NotFoundError' },
-        message: { type: 'string', example: 'User not found' },
-        statusCode: { type: 'integer', example: 404 },
-      },
-    },
-  },
-};
+/**
+ * ✅ Validación para eliminar un usuario
+ */
+export const deleteUserValidator = [
+  param('id').isUUID().withMessage('Invalid user ID format'),
+];
 
-export const getAllUsersSchema = {
-  description: 'Obtener todos los usuarios con paginación',
-  tags: ['Users'],
-  querystring: {
-    type: 'object',
-    properties: {
-      offset: { type: 'integer', minimum: 1, default: 1 },
-      limit: { type: 'integer', minimum: 1, default: 10 },
-    },
-  },
-  response: {
-    200: {
-      description: 'Lista de usuarios paginada',
-      type: 'array',
-      items: {
-        type: 'object',
-        properties: {
-          id: { type: 'string' },
-          username: { type: 'string' },
-          email: { type: 'string' },
-          role: { type: 'integer' },
-          createdAt: { type: 'string', format: 'date-time' },
-        },
-      },
-    },
-  },
-};
+/**
+ * ✅ Validación para obtener un usuario por ID
+ */
+export const getCurrentUserValidator = [
+  param('id').isUUID().withMessage('Invalid user ID format'),
+];
 
-export const getCurrentUserSchema = {
-  description: 'Obtener un usuario por ID',
-  tags: ['Users'],
-  params: {
-    type: 'object',
-    properties: {
-      id: { type: 'string', format: 'uuid' },
-    },
-    required: ['id'],
-  },
-  response: {
-    200: {
-      description: 'Información del usuario',
-      type: 'object',
-      properties: {
-        id: { type: 'string' },
-        username: { type: 'string' },
-        email: { type: 'string' },
-        role: { type: 'integer' },
-        createdAt: { type: 'string', format: 'date-time' },
-      },
-    },
-    404: {
-      description: 'Usuario no encontrado',
-      type: 'object',
-      properties: {
-        error: { type: 'string', example: 'NotFoundError' },
-        message: { type: 'string', example: 'User not found' },
-        statusCode: { type: 'integer', example: 404 },
-      },
-    },
-  },
-};
+/**
+ * ✅ Validación para obtener todos los usuarios con paginación
+ */
+export const getAllUsersValidator = [
+  query('offset')
+    .optional()
+    .isInt({ min: 1 })
+    .withMessage('Offset must be an integer greater than or equal to 1'),
+  query('limit')
+    .optional()
+    .isInt({ min: 1, max: 100 })
+    .withMessage('Limit must be an integer between 1 and 100'),
+];
+
+/**
+ * ✅ Validación para el login de usuario
+ */
+export const loginUserValidator = [
+  body('username')
+    .isString()
+    .notEmpty()
+    .withMessage('Username is required')
+    .isLength({ min: 3 })
+    .withMessage('Username must be at least 3 characters long'),
+  body('password')
+    .isString()
+    .notEmpty()
+    .withMessage('Password is required')
+    .isLength({ min: 6 })
+    .withMessage('Password must be at least 6 characters long'),
+];

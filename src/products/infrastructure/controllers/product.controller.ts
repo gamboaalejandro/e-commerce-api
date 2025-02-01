@@ -1,76 +1,81 @@
-import { FastifyReply, FastifyRequest } from 'fastify';
+import { Request, Response, NextFunction } from 'express';
 import { IProductService } from '../../application/interfaces/product.interface';
+import { SuccessResponse } from '../../../auth/application/dto/response_login.dto';
+import { WinstonLogger } from '../../../core/infrastructure/logger/winston.logger';
+import { ILogger } from '../../../core/infrastructure/logger/logger';
+
+const logger: ILogger = new WinstonLogger();
 
 export class ProductController {
   constructor(private readonly productService: IProductService) {}
 
-  async createProduct(req: FastifyRequest, reply: FastifyReply) {
+  async createProduct(req: Request, res: Response, next: NextFunction) {
     try {
-      const product = await this.productService.createProduct(req.body as any);
-      reply.status(201).send(product);
+      const product = await this.productService.createProduct(req.body);
+      const resp = new SuccessResponse(product);
+      res.status(201).json(resp);
     } catch (error) {
-      console.log(error);
-
-      reply.status(400).send({ error: 'BadRequestError', message: '' });
+      console.error(error);
+      logger.error(req, `Error en createProduct: ${error}`);
+      next(error);
     }
   }
 
-  async getProductById(req: FastifyRequest, reply: FastifyReply) {
+  async getProductById(req: Request, res: Response, next: NextFunction) {
     try {
-      const { id } = req.params as { id: string };
+      const { id } = req.params;
       const product = await this.productService.getProductById(id);
-      reply.status(200).send(product);
+      const resp = new SuccessResponse(product);
+      res.status(200).json(resp);
     } catch (error) {
-      console.log(error);
-
-      reply.status(404).send({ error: 'NotFoundError', message: '' });
+      console.error(error);
+      logger.error('Error en getProductById', error);
+      next(error);
     }
   }
 
-  async updateProduct(req: FastifyRequest, reply: FastifyReply) {
+  async updateProduct(req: Request, res: Response, next: NextFunction) {
     try {
-      const { id } = req.params as { id: string };
+      const { id } = req.params;
       const updatedProduct = await this.productService.updateProduct(
         id,
-        req.body as any
+        req.body
       );
-      reply.status(200).send(updatedProduct);
+      const resp = new SuccessResponse(updatedProduct);
+      res.status(200).json(resp);
     } catch (error) {
-      console.log(error);
-
-      reply
-        .status(404)
-        .send({ error: 'NotFoundError', message: 'error.message' });
+      console.error(error);
+      logger.error(req, `Error en updateProduct: ${error}`);
+      next(error);
     }
   }
 
-  async deleteProduct(req: FastifyRequest, reply: FastifyReply) {
+  async deleteProduct(req: Request, res: Response, next: NextFunction) {
     try {
-      const { id } = req.params as { id: string };
+      const { id } = req.params;
       await this.productService.deleteProduct(id);
-      reply.status(204).send();
+      res.status(204).send();
     } catch (error) {
-      console.log(error);
-      reply
-        .status(404)
-        .send({ error: 'NotFoundError', message: 'error.message' });
+      console.error(error);
+      logger.error(req, `Error en deleteProduct: ${error}`);
+      next(error);
     }
   }
 
-  async listProducts(req: FastifyRequest, reply: FastifyReply) {
+  async listProducts(req: Request, res: Response, next: NextFunction) {
     try {
-      const { skip, take } = req.query as { skip?: string; take?: string };
-      const products = await this.productService.listProducts(
-        Number(skip) || 0,
-        Number(take) || 10
-      );
-      reply.status(200).send(products);
+      const { offset = '0', limit = '10' } = req.query;
+      const products = await this.productService.listAll({
+        offset: Number(offset),
+        limit: Number(limit),
+      });
+      const resp = new SuccessResponse(products);
+      res.status(200).json(resp);
     } catch (error) {
-      console.log(error);
+      console.error(error);
+      logger.error(req, `Error en deleteProduct: ${error}`);
 
-      reply
-        .status(400)
-        .send({ error: 'BadRequestError', message: 'error.message' });
+      next(error);
     }
   }
 }

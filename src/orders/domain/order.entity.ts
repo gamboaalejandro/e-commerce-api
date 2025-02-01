@@ -1,4 +1,3 @@
-
 export class Order {
   id!: string;
   user_id!: string | null;
@@ -14,19 +13,19 @@ export class Order {
     Object.assign(this, {
       ...partial,
       address: partial.address ?? undefined,
-      order_state: partial.order_state ?? undefined, 
+      order_state: partial.order_state ?? undefined,
     });
   }
 }
 
 export enum OrderType {
-    PICKUP = 'pickup',
-    DELIVERY = 'delivery',
-  }
-  
-  export enum OrderState {
-    PENDIENTE = 'PENDIENTE',
-    EN_PROCESO = 'EN_PROCESO',
-    FINALIZADO = 'FINALIZADO',
-    CANCELADO = 'CANCELADO',
-  }
+  PICKUP = 'pickup',
+  DELIVERY = 'delivery',
+}
+
+export enum OrderState {
+  PENDIENTE = 'PENDIENTE',
+  EN_PROCESO = 'EN_PROCESO',
+  FINALIZADO = 'FINALIZADO',
+  CANCELADO = 'CANCELADO',
+}
