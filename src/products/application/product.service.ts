@@ -45,4 +45,13 @@ export class ProductService implements IProductService {
 
     await this.productRepository.delete(id);
   }
+
+  async getTotalPriceForOrder(
+    products: { product_id: string; quantity: number }[]
+  ): Promise<number> {
+    const total_price =
+      await this.productRepository.getTotalPriceForOrder(products);
+
+    return total_price;
+  }
 }

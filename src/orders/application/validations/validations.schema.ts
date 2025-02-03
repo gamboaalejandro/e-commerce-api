@@ -3,10 +3,6 @@ import { body, param, query } from 'express-validator';
 export const createOrderValidator = [
   body('user_id').isUUID().withMessage('Invalid user_id format (must be UUID)'),
 
-  body('total_price')
-    .isFloat({ min: 0 })
-    .withMessage('total_price must be a number greater than or equal to 0'),
-
   body('address').optional().isString().withMessage('address must be a string'),
 
   body('order_type')

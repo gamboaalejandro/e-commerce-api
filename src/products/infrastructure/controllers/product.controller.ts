@@ -54,7 +54,10 @@ export class ProductController {
     try {
       const { id } = req.params;
       await this.productService.deleteProduct(id);
-      res.status(204).send();
+      const resp = new SuccessResponse<string>(
+        'Producto eliminado exitosamente'
+      );
+      res.status(204).send(JSON.parse(JSON.stringify(resp)));
     } catch (error) {
       console.error(error);
       logger.error(req, `Error en deleteProduct: ${error}`);

@@ -8,4 +8,7 @@ export interface IProductRepository {
   delete(id: string): Promise<void>;
   listAll(pagination: PaginationDto): Promise<Product[]>;
   findByName(name: string): Promise<Product | null>;
+  getTotalPriceForOrder(
+    products: { product_id: string; quantity: number }[]
+  ): Promise<number>;
 }

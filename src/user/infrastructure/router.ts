@@ -19,7 +19,7 @@ const userServiceInstance = new UserService(userRepositoryInstance);
 const userControllerInstance = new UserController(userServiceInstance);
 
 // Rutas para actualizar y eliminar usuario
-userRouter.post(
+userRouter.put(
   '/update/:id',
   authenticateJWT,
   authorizeRole([1]),

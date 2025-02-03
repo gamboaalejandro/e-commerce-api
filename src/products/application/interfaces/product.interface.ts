@@ -7,4 +7,7 @@ export interface IProductService {
   updateProduct(id: string, data: Partial<Product>): Promise<Product>;
   deleteProduct(id: string): Promise<void>;
   listAll(pagination: PaginationDto): Promise<Product[]>;
+  getTotalPriceForOrder(
+    products: { product_id: string; quantity: number }[]
+  ): Promise<number>;
 }

@@ -11,7 +11,6 @@ export function errorHandler(
   res: Response,
   next: NextFunction
 ) {
-  console.log('LLEGANDO AL ERROR ', error);
   if (error instanceof BaseError) {
     logger.error(req, error.message);
     res.status(error.httpCode).json({
@@ -22,17 +21,15 @@ export function errorHandler(
     return;
   }
 
-  // 🔹 Capturar errores de validación de Express (ej: Joi, express-validator)
   if (error.name === 'ValidationError') {
     logger.error(
       req,
       `Error de validación detectado: ${JSON.stringify(error.errors)}`
     );
-
     res.status(400).json({
       name: 'ValidationError',
       statusCode: 400,
-      message: 'Error en la validación de los datos enviados',
+      message: '',
       validationErrors: error.errors || [],
     });
     return;

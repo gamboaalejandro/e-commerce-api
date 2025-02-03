@@ -8,28 +8,36 @@ import { Order, OrderType } from '../../domain/order.entity';
 import { IOrderRepository } from '../../application/interfaces/order.interface';
 import { OrderState } from '../../domain/order.state';
 import { UpdateOrderDto } from '../../application/dto/update_order.dto';
+import { CreateOrderDto } from '../../application/dto/create_order.dto';
 
 const prisma = new PrismaClient();
 
 export class OrderRepository implements IOrderRepository {
-  async create(orderData: Partial<Order>): Promise<Order> {
-    const newOrder = await prisma.order.create({
-      data: {
-        user_id: orderData.user_id!,
-        total_price: orderData.total_price!,
-        address: orderData.address ?? null,
-        order_type: this.mapToPrismaOrderType(
-          orderData.order_type ?? OrderType.PICKUP
-        ), // 🔹 Aseguramos que si no es por delivery se asume pickup
-        order_state: this.mapToPrismaOrderState(
-          orderData.order_state ?? OrderState.PENDIENTE
-        ), // todas las órdenes empiezan en estado pendiente
-      },
+  async create(orderData: CreateOrderDto): Promise<Order> {
+    return await prisma.$transaction(async (tx) => {
+      // 1️⃣ Crear la orden
+      const newOrder = await tx.order.create({
+        data: {
+          user_id: orderData.user_id,
+          total_price: orderData.total_price,
+          address: orderData.address ?? null,
+          order_type: orderData.order_type ?? OrderType.PICKUP,
+          order_state: orderData.order_state ?? OrderState.PENDIENTE,
+        },
+      });
+
+      // 2️⃣ Insertar los productos en la tabla intermedia en una sola transacción
+      await tx.productOrder.createMany({
+        data: orderData.products.map((product) => ({
+          order_id: newOrder.id,
+          product_id: product.product_id,
+          quantity: product.quantity,
+        })),
+      });
+
+      return newOrder;
     });
-
-    return this.mapToEntity(newOrder);
   }
-
   async findById(id: string): Promise<Order | null> {
     const order = await prisma.order.findUnique({ where: { id } });
     return order ? this.mapToEntity(order) : null;

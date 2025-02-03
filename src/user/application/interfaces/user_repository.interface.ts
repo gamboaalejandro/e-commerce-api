@@ -1,3 +1,4 @@
+import { PaginationDto } from '../../../core/application/dto/pagination.dto';
 import { User } from '../../domain/user.entity';
 
 export interface IUserRepository {
@@ -7,5 +8,5 @@ export interface IUserRepository {
   findById(id: string): Promise<User | null>;
   update(id: string, user: Partial<User>): Promise<User>;
   delete(id: string): Promise<void>;
-  listAll(): Promise<User[]>;
+  listAll(pagination: PaginationDto): Promise<User[]>;
 }

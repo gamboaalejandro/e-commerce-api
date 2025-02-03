@@ -2,13 +2,17 @@ import { PrismaClient } from '@prisma/client';
 import { Product } from '../../domain/product.entity';
 import { IProductRepository } from '../../application/interfaces/product.repository';
 import { PaginationDto } from '../../../core/application/dto/pagination.dto';
+import { NotFoundError } from '../../../core/infrastructure/errors/custom_errors/not_found.error';
 
 const prisma = new PrismaClient();
 
 export default class ProductRepository implements IProductRepository {
   findByName(name: string): Promise<Product | null> {
-    const product = prisma.product.findUnique({
-      where: { name },
+    const product = prisma.product.findFirst({
+      where: {
+        name: name,
+        deleted_at: null, // Solo usuarios activos
+      },
     });
     return product;
   }
@@ -27,8 +31,11 @@ export default class ProductRepository implements IProductRepository {
   }
 
   async findById(id: string): Promise<Product | null> {
-    const product = await prisma.product.findUnique({
-      where: { id },
+    const product = await prisma.product.findFirst({
+      where: {
+        id: id,
+        deleted_at: null, // Solo usuarios activos
+      },
     });
     return product ? this.mapToEntity(product) : null;
   }
@@ -59,6 +66,31 @@ export default class ProductRepository implements IProductRepository {
       take: pagination.limit,
     });
     return products.map(this.mapToEntity);
+  }
+
+  async getTotalPriceForOrder(
+    products: { product_id: string; quantity: number }[]
+  ): Promise<number> {
+    // Obtener los productos con los precios
+    const productIds = products.map((p) => p.product_id);
+
+    const productPrices = await prisma.product.findMany({
+      where: { id: { in: productIds }, deleted_at: null },
+      select: { id: true, price: true },
+    });
+
+    // Validar que todos los productos existen
+    if (productPrices.length !== productIds.length) {
+      throw new NotFoundError('Some products were not found');
+    }
+
+    // Multiplicar cada precio por su cantidad
+    const totalPrice = products.reduce((sum, p) => {
+      const product = productPrices.find((prod) => prod.id === p.product_id);
+      return sum + (product ? product.price * p.quantity : 0);
+    }, 0);
+
+    return totalPrice;
   }
 
   private mapToEntity(product: any): Product {

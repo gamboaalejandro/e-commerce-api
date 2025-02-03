@@ -1,12 +1,13 @@
 import { PaginationDto } from '../../core/application/dto/pagination.dto';
+import { CreateOrderDto } from '../application/dto/create_order.dto';
 import { Order } from './order.entity';
 
 export interface IOrderService {
-  createOrder(data: Partial<Order>): Promise<Order>;
+  createOrder(data: CreateOrderDto): Promise<Order>;
 
   getOrderById(id: string): Promise<Order | null>;
 
-  updateOrder(id: string, data: Partial<Order>): Promise<Order>;
+  updateOrder(id: string, data: CreateOrderDto): Promise<Order>;
 
   deleteOrder(id: string): Promise<void>;
 

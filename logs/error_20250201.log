@@ -4,3 +4,100 @@ error: 2025-02-01 1:10:34 AM (GET /api/user/) [path: /api/user/] [request: {"use
 error: 2025-02-01 10:44:49 AM (POST /api/user/update/744749e7-794c-4415-95d7-e7c9285ae0a9) [path: /api/user/update/744749e7-794c-4415-95d7-e7c9285ae0a9] [request: {"username":"holadd","password":"pass123"}] [message: Error no controlado: Error [ERR_HTTP_HEADERS_SENT]: Cannot set headers after they are sent to the client] 
 error: 2025-02-01 10:48:50 AM (POST /api/user/update/744749e7-794c-4415-95d7-e7c9285ae0a9) [path: /api/user/update/744749e7-794c-4415-95d7-e7c9285ae0a9] [request: {"username":"holadd","password":"pass123"}] [message: No tienes permisos para realizar esta acción] 
 error: 2025-02-01 1:25:01 PM (POST /api/auth/login) [path: /api/auth/login] [request: {"username":"user123","password":"password123"}] [message: User not found] 
+error: 2025-02-01 2:09:32 PM (POST /api/auth/register) [path: /api/auth/register] [request: {"username":"user123","email":"user@example.com","password":"password123","address":"123 Main St, City","role":2}] [message: User email already exists] 
+error: 2025-02-01 2:09:39 PM (POST /api/auth/register) [path: /api/auth/register] [request: {"username":"user12344","email":"user@example.com","password":"password123","address":"123 Main St, City","role":2}] [message: User email already exists] 
+error: 2025-02-01 2:10:12 PM (GET /api/user?offset=1&limit=10) [path: /api/user] [request: {}] [message: No tienes permisos para realizar esta acción] 
+error: 2025-02-01 2:10:43 PM (GET /api/user?offset=1&limit=10) [path: /api/user] [request: {}] [message: No tienes permisos para realizar esta acción] 
+error: 2025-02-01 2:11:02 PM (GET /api/user?offset=1&limit=10) [path: /api/user] [request: {}] [message: METODO NO IMPLEMENTADO] 
+error: 2025-02-01 2:16:36 PM (PUT /api/user/update/8c329cbf-2a0c-4d81-acb1-71ae14a0419a) [path: /api/user/update/8c329cbf-2a0c-4d81-acb1-71ae14a0419a] [request: {"username":"eeeeeeeeee","address":"aaaaaaaaaaaa","email":"userdsdsdsds@example.com","role":2}] [message: Error no controlado: Error: 
+Invalid `prisma.user.findUnique()` invocation in
+C:\Users\aleja\Desktop\prueba_avila\e-commerce-api\src\user\infrastructure\repositories\user.repository.ts:35:36
+
+  32  * Buscar usuario por ID
+  33  */
+  34 async findById(id: string): Promise<User | null> {
+→ 35   const user = await prisma.user.findUnique({
+         where: {
+           id: '8c329cbf-2a0c-4d81-acb1-71ae14a0419a',
+           deleted_at: null
+           ~~~~~~~~~~
+         }
+         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+       })
+
+Argument where of type UserWhereUniqueInput needs exactly one argument, but you provided id and deleted_at. Please choose one. Available args: 
+type UserWhereUniqueInput {
+  id?: String
+  username?: String
+  email?: String
+}
+Unknown arg `deleted_at` in where.deleted_at for type UserWhereUniqueInput. Available args:
+
+type UserWhereUniqueInput {
+  id?: String
+  username?: String
+  email?: String
+}
+
+] 
+error: 2025-02-01 2:17:14 PM (PUT /api/user/update/8c329cbf-2a0c-4d81-acb1-71ae14a0419a) [path: /api/user/update/8c329cbf-2a0c-4d81-acb1-71ae14a0419a] [request: {"username":"eeeeeeeeee","address":"aaaaaaaaaaaa","email":"userdsdsdsds@example.com","role":2}] [message: Error no controlado: Error: 
+Invalid `prisma.user.update()` invocation in
+C:\Users\aleja\Desktop\prueba_avila\e-commerce-api\src\user\infrastructure\repositories\user.repository.ts:64:43
+
+  61  * Actualizar usuario
+  62  */
+  63 async update(id: string, user: Partial<User>): Promise<User> {
+→ 64   const updatedUser = await prisma.user.update({
+         where: {
+           id: '8c329cbf-2a0c-4d81-acb1-71ae14a0419a',
+           deleted_at: null
+           ~~~~~~~~~~
+         },
+         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+         data: {
+           username: 'eeeeeeeeee',
+           email: 'userdsdsdsds@example.com',
+           address: 'aaaaaaaaaaaa',
+           password: undefined,
+           role: 2,
+           is_active: true
+         }
+       })
+
+Argument where of type UserWhereUniqueInput needs exactly one argument, but you provided id and deleted_at. Please choose one. Available args: 
+type UserWhereUniqueInput {
+  id?: String
+  username?: String
+  email?: String
+}
+Unknown arg `deleted_at` in where.deleted_at for type UserWhereUniqueInput. Available args:
+
+type UserWhereUniqueInput {
+  id?: String
+  username?: String
+  email?: String
+}
+
+] 
+error: 2025-02-01 2:22:36 PM (GET /api/user/8c329cbf-2a0c-4d81-acb1-71ae14a0419a) [path: /api/user/8c329cbf-2a0c-4d81-acb1-71ae14a0419a] [request: {}] [message: User not found. not found] 
+error: 2025-02-01 2:24:20 PM (GET /api/user?offset=10&limit=1) [path: /api/user] [request: {}] [message: No users found. not found] 
+error: 2025-02-01 2:24:26 PM (GET /api/user?offset=10&limit=3) [path: /api/user] [request: {}] [message: No users found. not found] 
+error: 2025-02-01 2:28:51 PM (GET /api/user?offset=0&limit=10) [path: /api/user] [request: {}] [message: Invalid pagination parameters] 
+error: 2025-02-01 2:40:26 PM (DELETE /983faadc-d41e-4613-b2d3-ccb303e161f9) [path: /983faadc-d41e-4613-b2d3-ccb303e161f9] [request: {}] [message: Error en deleteProduct: NotFoundError: Product not found not found] 
+error: 2025-02-01 2:40:26 PM (DELETE /api/product/983faadc-d41e-4613-b2d3-ccb303e161f9) [path: /api/product/983faadc-d41e-4613-b2d3-ccb303e161f9] [request: {}] [message: Product not found not found] 
+error: 2025-02-01 7:43:54 PM (POST /api/auth/login) [path: /api/auth/login] [request: {"username":"user123","password":"password123"}] [message: User not found] 
+error: 2025-02-01 7:45:04 PM (POST /api/order) [path: /api/order] [request: {"user_id":"3fa85f64-5717-4562-b3fc-2c963f66afa6","address":"string","order_type":"pickup","products":[{"product_id":"08c4fb51-5345-417a-9f3e-64c2f32fc09f","quantity":2}]}] [message: Error no controlado: TypeError: Cannot read properties of undefined (reading 'getTotalPriceForOrder')] 
+error: 2025-02-01 7:45:25 PM (POST /api/order) [path: /api/order] [request: {"user_id":"3fa85f64-5717-4562-b3fc-2c963f66afa6","address":"string","order_type":"pickup","products":[{"product_id":"08c4fb51-5345-417a-9f3e-64c2f32fc09f","quantity":2}]}] [message: Error no controlado: TypeError: Cannot read properties of undefined (reading 'getTotalPriceForOrder')] 
+error: 2025-02-01 7:47:40 PM (POST /api/order) [path: /api/order] [request: {"user_id":"3fa85f64-5717-4562-b3fc-2c963f66afa6","address":"string","order_type":"pickup","products":[{"product_id":"08c4fb51-5345-417a-9f3e-64c2f32fc09f","quantity":2}]}] [message: Some products were not found not found] 
+error: 2025-02-01 7:48:28 PM (POST /api/order) [path: /api/order] [request: {"user_id":"3fa85f64-5717-4562-b3fc-2c963f66afa6","address":"string","order_type":"pickup","products":[{"product_id":"08c4fb51-5345-417a-9f3e-64c2f32fc09f","quantity":2}],"total_price":28}] [message: Error no controlado: PrismaClientKnownRequestError: 
+Invalid `prisma.order.create()` invocation in
+C:\Users\aleja\Desktop\prueba_avila\e-commerce-api\src\orders\infrastructure\repositories\order.repository.ts:17:41
+
+  14 
+  15 export class OrderRepository implements IOrderRepository {
+  16   async create(orderData: CreateOrderDto): Promise<Order> {
+→ 17     const newOrder = await prisma.order.create(
+Foreign key constraint failed on the field: `(not available)`] 
+error: 2025-02-01 7:52:29 PM (POST /api/order) [path: /api/order] [request: {"user_id":"3fa85f64-5717-4562-b3fc-2c963f66afa6","address":"string","order_type":"pickup","products":[{"product_id":"08c4fb51-5345-417a-9f3e-64c2f32fc09f","quantity":2}]}] [message: Error no controlado: TypeError: Cannot read properties of undefined (reading 'getCurrentUser')] 
+error: 2025-02-01 7:52:49 PM (POST /api/order) [path: /api/order] [request: {"user_id":"3fa85f64-5717-4562-b3fc-2c963f66afa6","address":"string","order_type":"pickup","products":[{"product_id":"08c4fb51-5345-417a-9f3e-64c2f32fc09f","quantity":2}]}] [message: User not found. not found] 
+error: 2025-02-01 7:53:27 PM (POST /api/order) [path: /api/order] [request: {"user_id":"f11d5d12-996a-4edd-8aa0-f92bd5f6c8f4","address":"string","order_type":"pickup","products":[{"product_id":"08c4fb51-5345-417a-9f3e-64c2f32fc09f","quantity":2}],"total_price":28}] [message: Error no controlado: TypeError: Cannot read properties of undefined (reading 'create')] 

@@ -50,7 +50,7 @@ export const getCurrentUserValidator = [
 export const getAllUsersValidator = [
   query('offset')
     .optional()
-    .isInt({ min: 1 })
+    .isInt({ min: 0 })
     .withMessage('Offset must be an integer greater than or equal to 1'),
   query('limit')
     .optional()

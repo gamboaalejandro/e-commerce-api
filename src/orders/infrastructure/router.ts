@@ -14,10 +14,22 @@ import { OrderService } from '../application/services/order.service';
 import { OrderRepository } from './repositories/order.repository';
 import { authorizeRole } from '../../core/infrastructure/middleware/authorization.middleware';
 import { authenticateJWT } from '../../core/infrastructure/middleware/jwt.middleware';
+import ProductRepository from '../../products/infrastructure/repositories/product.repositry';
+import { ProductService } from '../../products/application/product.service';
+import UserRepository from '../../user/infrastructure/repositories/user.repository';
+import { UserService } from '../../user/application/user.service';
 
 const orderRouter = express.Router();
+const userRepositoryInstance = new UserRepository();
+const userServiceInstance = new UserService(userRepositoryInstance);
 const orderRepositoryInstance = new OrderRepository();
-const orderServiceInstance = new OrderService(orderRepositoryInstance);
+const productRepositoryInstance = new ProductRepository();
+const productServiceInstance = new ProductService(productRepositoryInstance);
+const orderServiceInstance = new OrderService(
+  orderRepositoryInstance,
+  productServiceInstance,
+  userServiceInstance
+);
 const orderControllerInstance = new OrderController(orderServiceInstance);
 // Crear orden
 orderRouter.post(
@@ -34,7 +46,7 @@ orderRouter.get(
   '/:id',
 
   authenticateJWT,
-  authorizeRole([1]),
+  authorizeRole([1, 2]),
   getOrderByIdValidator,
   validateRequest,
   orderControllerInstance.getOrderById.bind(orderControllerInstance)
@@ -64,7 +76,7 @@ orderRouter.delete(
 orderRouter.get(
   '/',
   authenticateJWT,
-  authorizeRole([1]),
+  authorizeRole([1, 2]),
   getAllOrdersValidator,
   validateRequest,
   orderControllerInstance.listOrders.bind(orderControllerInstance)

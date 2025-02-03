@@ -3,11 +3,27 @@ import { IOrderService } from '../../domain/order.interface';
 import { PaginationDto } from '../../../core/application/dto/pagination.dto';
 import { IOrderRepository } from '../interfaces/order.interface';
 import { OrderState } from '../../domain/order.state';
+import { ProductService } from '../../../products/application/product.service';
+import { CreateOrderDto } from '../dto/create_order.dto';
+import { IProductService } from '../../../products/application/interfaces/product.interface';
+import { IUserService } from '../../../user/domain/user.interface';
+import { NotFoundError } from '../../../core/infrastructure/errors/custom_errors/not_found.error';
 
 export class OrderService implements IOrderService {
-  constructor(private readonly orderRepository: IOrderRepository) {}
+  constructor(
+    private readonly orderRepository: IOrderRepository,
+    private readonly productService: IProductService,
+    private readonly userService: IUserService
+  ) {}
 
-  async createOrder(data: Partial<Order>): Promise<Order> {
+  async createOrder(data: CreateOrderDto): Promise<Order> {
+    console.log(data);
+    const total_price = await this.productService.getTotalPriceForOrder(
+      data.products
+    );
+    const user = await this.userService.getCurrentUser(data.user_id);
+    if (!user) throw new NotFoundError('User not found');
+    data.total_price = total_price;
     return this.orderRepository.create(data);
   }
 
@@ -44,4 +60,6 @@ export class OrderService implements IOrderService {
       order_state: OrderState.CANCELADO,
     });
   }
+
+  async;
 }
