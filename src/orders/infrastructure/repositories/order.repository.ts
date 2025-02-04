@@ -35,7 +35,7 @@ export class OrderRepository implements IOrderRepository {
         })),
       });
 
-      return newOrder;
+      return this.mapToEntity(newOrder);
     });
   }
   async findById(id: string): Promise<Order | null> {
@@ -75,10 +75,9 @@ export class OrderRepository implements IOrderRepository {
   }
 
   async updateOrderStatus(id: string, status: OrderState): Promise<Order> {
-    console.log(status);
     const updatedOrder = await prisma.order.update({
       where: { id },
-      data: { order_state: 'PENDIENTE' },
+      data: { order_state: status },
     });
     return this.mapToEntity(updatedOrder);
   }
