@@ -39,7 +39,23 @@ export class OrderRepository implements IOrderRepository {
     });
   }
   async findById(id: string): Promise<Order | null> {
-    const order = await prisma.order.findUnique({ where: { id } });
+    const order = await prisma.order.findUnique({
+      where: { id },
+      include: {
+        ProductOrder: {
+          include: {
+            producto: {
+              // Relación con Product para obtener detalles del producto
+              select: {
+                id: true,
+                name: true,
+                price: true,
+              },
+            },
+          },
+        },
+      },
+    });
     return order ? this.mapToEntity(order) : null;
   }
 
@@ -47,9 +63,23 @@ export class OrderRepository implements IOrderRepository {
     const orders = await prisma.order.findMany({
       skip,
       take,
-      where: { deleted_at: null }, // ✅ Evitamos traer órdenes eliminadas
+      where: { deleted_at: null }, // Evitamos traer órdenes eliminadas
+      include: {
+        ProductOrder: {
+          include: {
+            producto: {
+              // Relación con Product para obtener detalles del producto
+              select: {
+                id: true,
+                name: true,
+                price: true,
+              },
+            },
+          },
+        },
+      },
     });
-    return orders.map(this.mapToEntity);
+    return orders.map(this.mapToEntity.bind(this));
   }
 
   async update(id: string, updateData: UpdateOrderDto): Promise<Order> {
@@ -72,14 +102,6 @@ export class OrderRepository implements IOrderRepository {
       where: { id },
       data: { deleted_at: new Date() },
     });
-  }
-
-  async updateOrderStatus(id: string, status: OrderState): Promise<Order> {
-    const updatedOrder = await prisma.order.update({
-      where: { id },
-      data: { order_state: status },
-    });
-    return this.mapToEntity(updatedOrder);
   }
 
   async cancelOrder(id: string): Promise<Order> {

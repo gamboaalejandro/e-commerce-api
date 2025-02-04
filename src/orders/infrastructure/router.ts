@@ -6,7 +6,6 @@ import {
   updateOrderValidator,
   deleteOrderValidator,
   getAllOrdersValidator,
-  updateOrderStatusValidator,
   cancelOrderValidator,
 } from '../application/validations/validations.schema';
 import { OrderController } from './controller/order.controller';
@@ -80,16 +79,6 @@ orderRouter.get(
   getAllOrdersValidator,
   validateRequest,
   orderControllerInstance.listOrders.bind(orderControllerInstance)
-);
-
-// Actualizar estado de la orden
-orderRouter.patch(
-  '/:id/status',
-  authenticateJWT,
-  authorizeRole([1]),
-  updateOrderStatusValidator,
-  validateRequest,
-  orderControllerInstance.updateOrderStatus.bind(orderControllerInstance)
 );
 
 // Cancelar orden

@@ -59,17 +59,6 @@ export const getAllOrdersValidator = [
     .toInt(),
 ];
 
-export const updateOrderStatusValidator = [
-  param('id').isUUID().withMessage('Invalid order ID format (must be UUID)'),
-
-  body('order_state')
-    .isString()
-    .isIn(['PENDIENTE', 'EN_PROCESO', 'FINALIZADO', 'CANCELADO'])
-    .withMessage(
-      "order_state must be one of: 'PENDIENTE', 'EN_PROCESO', 'FINALIZADO', 'CANCELADO'"
-    ),
-];
-
 export const cancelOrderValidator = [
   param('id').isUUID().withMessage('Invalid order ID format (must be UUID)'),
 ];

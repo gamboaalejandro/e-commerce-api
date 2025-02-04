@@ -3,6 +3,7 @@ import { Product } from '../../domain/product.entity';
 import { IProductRepository } from '../../application/interfaces/product.repository';
 import { PaginationDto } from '../../../core/application/dto/pagination.dto';
 import { NotFoundError } from '../../../core/infrastructure/errors/custom_errors/not_found.error';
+import { ValidationError } from '../../../core/infrastructure/errors/custom_errors/validation.error';
 
 const prisma = new PrismaClient();
 
@@ -76,12 +77,25 @@ export default class ProductRepository implements IProductRepository {
 
     const productPrices = await prisma.product.findMany({
       where: { id: { in: productIds }, deleted_at: null },
-      select: { id: true, price: true },
+      select: { id: true, price: true, stock: true },
     });
 
     // Validar que todos los productos existen
     if (productPrices.length !== productIds.length) {
       throw new NotFoundError('Some products were not found');
+    }
+
+    // Validar que la cantidad solicitada no exceda el stock disponible
+    for (const p of products) {
+      const product = productPrices.find((prod) => prod.id === p.product_id);
+      if (!product) {
+        throw new NotFoundError(`Product with ID ${p.product_id} not found`);
+      }
+      if (p.quantity > product.stock) {
+        throw new ValidationError(
+          `Product with ID ${p.product_id} has insufficient stock (Available: ${product.stock}, Requested: ${p.quantity})`
+        );
+      }
     }
 
     // Multiplicar cada precio por su cantidad
@@ -90,7 +104,23 @@ export default class ProductRepository implements IProductRepository {
       return sum + (product ? product.price * p.quantity : 0);
     }, 0);
 
+    // Disminuir el stock SOLO si todo es válido
+    await this.decreaseStock(products);
+
     return totalPrice;
+  }
+
+  private async decreaseStock(
+    products: { product_id: string; quantity: number }[]
+  ) {
+    await prisma.$transaction(
+      products.map((p) =>
+        prisma.product.update({
+          where: { id: p.product_id },
+          data: { stock: { decrement: p.quantity } },
+        })
+      )
+    );
   }
 
   private mapToEntity(product: any): Product {

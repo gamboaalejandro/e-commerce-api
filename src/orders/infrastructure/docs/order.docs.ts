@@ -206,14 +206,14 @@
  *       - BearerAuth: []
  *     parameters:
  *       - in: query
- *         name: skip
+ *         name: offset
  *         schema:
  *           type: integer
  *           minimum: 0
  *           default: 0
  *         description: Número de órdenes a saltar
  *       - in: query
- *         name: take
+ *         name: limit
  *         schema:
  *           type: integer
  *           minimum: 1
@@ -229,4 +229,89 @@
  *               type: array
  *               items:
  *                 $ref: '#/components/schemas/Order'
+ */
+
+/**
+ * @swagger
+ * /api/order/{id}/cancel:
+ *   patch:
+ *     summary: Cancelar una orden
+ *     description: Cambia el estado de una orden a "CANCELADO".
+ *     tags:
+ *       - Order
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *           format: uuid
+ *         description: ID de la orden a cancelar
+ *     responses:
+ *       200:
+ *         description: Orden cancelada exitosamente
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 id:
+ *                   type: string
+ *                   format: uuid
+ *                 order_state:
+ *                   type: string
+ *                   example: "CANCELADO"
+ *                 updated_at:
+ *                   type: string
+ *                   format: date-time
+ *       400:
+ *         description: Formato inválido del ID de la orden
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   example: "BadRequestError"
+ *                 message:
+ *                   type: string
+ *                   example: "Invalid order ID format (must be UUID)"
+ *                 statusCode:
+ *                   type: integer
+ *                   example: 400
+ *       404:
+ *         description: Orden no encontrada
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   example: "NotFoundError"
+ *                 message:
+ *                   type: string
+ *                   example: "Order not found"
+ *                 statusCode:
+ *                   type: integer
+ *                   example: 404
+ *       500:
+ *         description: Error interno del servidor
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   example: "InternalServerError"
+ *                 message:
+ *                   type: string
+ *                   example: "An unexpected error occurred"
+ *                 statusCode:
+ *                   type: integer
+ *                   example: 500
  */

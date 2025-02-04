@@ -29,7 +29,7 @@ export class ProductController {
       res.status(200).json(resp);
     } catch (error) {
       console.error(error);
-      logger.error('Error en getProductById', error);
+      logger.error(req, 'Error en getProductById');
       next(error);
     }
   }

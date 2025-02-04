@@ -1,5 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import { IOrderService } from '../../domain/order.interface';
+import { SuccessResponse } from '../../../auth/application/dto/response_login.dto';
+import { Order } from '../../domain/order.entity';
 
 export class OrderController {
   constructor(private readonly orderService: IOrderService) {}
@@ -8,7 +10,8 @@ export class OrderController {
     try {
       const orderData = req.body;
       const order = await this.orderService.createOrder(orderData);
-      res.status(201).json(order);
+      const resp = new SuccessResponse<Order>(order);
+      res.status(201).json(resp);
     } catch (error) {
       next(error);
     }
@@ -18,10 +21,8 @@ export class OrderController {
     try {
       const { id } = req.params;
       const order = await this.orderService.getOrderById(id);
-      if (!order) {
-        res.status(404).json({ message: 'Order not found' });
-      }
-      res.status(200).json(order);
+      const resp = new SuccessResponse<Order>(order);
+      res.status(200).json(resp);
     } catch (error) {
       next(error);
     }
@@ -32,7 +33,9 @@ export class OrderController {
       const { id } = req.params;
       const orderData = req.body;
       const updatedOrder = await this.orderService.updateOrder(id, orderData);
-      res.status(200).json(updatedOrder);
+      const resp = new SuccessResponse<Order>(updatedOrder);
+
+      res.status(200).json(resp);
     } catch (error) {
       next(error);
     }
@@ -42,7 +45,9 @@ export class OrderController {
     try {
       const { id } = req.params;
       await this.orderService.deleteOrder(id);
-      res.status(204).send();
+      const resp = new SuccessResponse('Orden eliminada con éxito');
+
+      res.status(204).send(resp);
     } catch (error) {
       next(error);
     }
@@ -58,31 +63,20 @@ export class OrderController {
         offset: Number(offset),
         limit: Number(limit),
       });
-      res.status(200).json(orders);
+      const resp = new SuccessResponse<Order[]>(orders);
+
+      res.status(200).json(resp);
     } catch (error) {
       next(error);
     }
   }
-
-  async updateOrderStatus(req: Request, res: Response, next: NextFunction) {
-    try {
-      const { id } = req.params;
-      const { order_state } = req.body;
-      const updatedOrder = await this.orderService.updateOrderStatus(
-        id,
-        order_state
-      );
-      res.status(200).json(updatedOrder);
-    } catch (error) {
-      next(error);
-    }
-  }
-
   async cancelOrder(req: Request, res: Response, next: NextFunction) {
     try {
       const { id } = req.params;
       const canceledOrder = await this.orderService.cancelOrder(id);
-      res.status(200).json(canceledOrder);
+      const resp = new SuccessResponse<Order>(canceledOrder);
+
+      res.status(200).json(resp);
     } catch (error) {
       next(error);
     }

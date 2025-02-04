@@ -6,6 +6,5 @@ export interface IOrderRepository {
   listAll(skip: number, take: number): Promise<Order[]>;
   update(id: string, updateData: Partial<Order>): Promise<Order>;
   delete(id: string): Promise<void>;
-  updateOrderStatus(id: string, status: string): Promise<Order>;
   cancelOrder(id: string): Promise<Order>;
 }
