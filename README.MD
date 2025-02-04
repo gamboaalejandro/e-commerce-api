@@ -32,12 +32,6 @@ _Este proyecto es una API escalable y modular para un sistema de comercio electr
 - **TypeScript** (Tipado fuerte y mantenibilidad)
 - **Prisma ORM** (Manejo eficiente de base de datos)
 - **PostgreSQL** (Base de datos relacional)
-- **JWT** (Autenticación segura)
-- **Express Validator** (Validación de datos)
-- **Swagger** (Documentación de API)
-- **Winston Logger** (Registro estructurado de logs)
-- **Arquitectura Hexagonal** (Separación clara entre capas)
-
 ---
 
 ## 📂 **Estructura del Proyecto**
@@ -55,12 +49,17 @@ La API está organizada en módulos para facilitar la escalabilidad y el manteni
    │  │  ├📂 errors (Manejo de errores personalizados)
    │  │  ├📂 security (JWT y autenticación)
    │  │  ├📂 logger (Sistema de logs con Winston)
+   |  ├📂 application 
+   │   │ ├📂 services(Servicio de autenticacion de registro)
+   │  │  ├📂 dto (data-transfer-object correspondiente a los datos a recibir en el login y registro )
+   │  │  ├📂 logger (Sistema de logs con Winston)
    ├📂 orders (Gestión de pedidos)
    ├📂 products (Gestión de productos)
    ├📂 users (Gestión de usuarios)
    ├📂 database (Prisma ORM y migraciones)
    └📄 server.ts (Configuración del servidor)
- ├📝 prisma (Esquema de base de datos y migraciones)
+ ├📂 deploy (variables de entorno) 
+ ├📂 prisma (Esquema de base de datos y migraciones)
  ├📝 .eslintrc.json (Configuración de ESLint)
  ├📝 package.json
  ├📝 README.md
@@ -70,6 +69,7 @@ La API está organizada en módulos para facilitar la escalabilidad y el manteni
 
 ## 💡 **Arquitectura Hexagonal**
 Este proyecto sigue los principios de **Arquitectura Hexagonal**, lo que permite la independencia de los frameworks y la reutilización de la lógica de negocio en diferentes interfaces.
+Se utilizo el principio de Inversion de dependencias para garantizar la extensibilidad del codigo y servicios asociados.
 
 | **Capa**              | **Responsabilidad** |
 |----------------------|----------------------|
@@ -77,7 +77,11 @@ Este proyecto sigue los principios de **Arquitectura Hexagonal**, lo que permite
 | **Aplicación**       | Casos de uso y validaciones de negocio |
 | **Dominio**         | Entidades, interfaces y lógica pura de negocio |
 
-Cada módulo sigue esta estructura para garantizar escalabilidad y testabilidad.
+Cada módulo sigue esta estructura para garantizar escalabilidad y testeabilidad.
+
+Adicionalmente se implemento un sistema de Logging con la libreria winston, la cual nos permite registrar todos los eventos del sistema para futuras revisiones.
+Se implemento un manejo de errores abstracto y generico, para cada estilo de error en la aplicacion.
+
 
 ---
 
@@ -96,12 +100,19 @@ npm install
 ```
 
 ### **3️⃣ Configura las variables de entorno**
-Crea un archivo `.env` en la raíz del proyecto con las siguientes variables:
+Crea un archivo `.env.dev` en la raíz del proyecto con las descritas en el archiv:
 
 ```
-DATABASE_URL=postgresql://usuario:password@localhost:5432/e-commerce-db?schema=public
-JWT_SECRET=tu_secreto_super_seguro
 PORT=3000
+APP_NAME="Ecommerce-test"
+ENVIRONMENT=development
+DEBUG=true
+SECRET_KEY=supersecretkey22234
+ALLOWED_ORIGINS="*"
+DATABASE_URL=postgresql://postgres:admin@localhost:5432/e-commerce-db
+API_URL=http://localhost:8000
+JWT_SECRET=superSecretKey
+HOST=localhost
 ```
 
 ### **4️⃣ Generar base de datos**
@@ -123,26 +134,11 @@ La API se ejecutará en:
 
 ---
 
+De esta manera se podra acceder a la documentacion de la API y endpoints correspondientes 
+
 ## 💚 **Autenticación y Seguridad**
 El sistema utiliza **JWT (JSON Web Token)** para la autenticación.  
 Se implementó un **middleware de autorización** para proteger rutas sensibles.
-
-Ejemplo de middleware de autenticación:
-```typescript
-import { Request, Response, NextFunction } from 'express';
-import jwt from 'jsonwebtoken';
-
-export function authenticateJWT(req: Request, res: Response, next: NextFunction) {
-  const token = req.header('Authorization')?.split(' ')[1];
-  if (!token) return res.status(401).json({ message: 'Unauthorized' });
-
-  jwt.verify(token, process.env.JWT_SECRET!, (err, user) => {
-    if (err) return res.status(403).json({ message: 'Forbidden' });
-    req.user = user;
-    next();
-  });
-}
-```
 
 ---
 
@@ -150,26 +146,6 @@ export function authenticateJWT(req: Request, res: Response, next: NextFunction)
 La API está documentada con **Swagger**. Puedes acceder a la documentación en:
 
 📌 `http://localhost:3000/docs`
-
----
-
-## 🔍 **Ejemplo de Uso**
-### **Registro de Usuario**
-```sh
-curl -X POST http://localhost:3000/api/auth/register \
--H "Content-Type: application/json" \
--d '{
-  "username": "testuser",
-  "email": "test@example.com",
-  "password": "123456"
-}'
-```
-
-### **Obtener una Orden**
-```sh
-curl -X GET http://localhost:3000/api/order/123e4567-e89b-12d3-a456-426614174000 \
--H "Authorization: Bearer <your_token>"
-```
 
 ---
 
