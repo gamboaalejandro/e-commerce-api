@@ -11,6 +11,9 @@
         "lint": "eslint \"{.,src,apps,libs,test}/**/*.ts\" --fix && eslint server.ts --fix",
         "format": "prettier --write ."
     },
+    "prisma": {
+      "seed": "ts-node prisma/seed.ts"
+    },
     "keywords": [],
     "author": "",
     "license": "ISC",

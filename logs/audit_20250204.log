@@ -41,3 +41,7 @@ info: 2025-02-04 1:52:37 PM [data: "Iniciando servidor "] [message: Iniciando se
 info: 2025-02-04 1:53:02 PM [data: "Iniciando servidor "] [message: Iniciando servidor ] 
 info: 2025-02-04 2:06:55 PM [data: "Iniciando servidor "] [message: Iniciando servidor ] 
 info: 2025-02-04 3:57:58 PM [data: "Iniciando servidor "] [message: Iniciando servidor ] 
+info: 2025-02-04 4:29:53 PM [data: "🌱 Seeding database..."] [message: 🌱 Seeding database...] 
+info: 2025-02-04 4:29:53 PM [data: "Created Products: Laptop Gaming, Mouse Inalambrico"] [message: Created Products: Laptop Gaming, Mouse Inalambrico] 
+info: 2025-02-04 4:29:53 PM [data: "Created Order ID: 5a83620b-5810-45dc-817b-8036a69dbc77"] [message: Created Order ID: 5a83620b-5810-45dc-817b-8036a69dbc77] 
+info: 2025-02-04 4:29:53 PM [data: "🌱 Seeding complete!"] [message: 🌱 Seeding complete!] 
