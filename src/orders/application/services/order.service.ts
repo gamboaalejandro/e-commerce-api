@@ -3,11 +3,11 @@ import { IOrderService } from '../../domain/order.interface';
 import { PaginationDto } from '../../../core/application/dto/pagination.dto';
 import { IOrderRepository } from '../interfaces/order.interface';
 import { OrderState } from '../../domain/order.state';
-import { ProductService } from '../../../products/application/product.service';
 import { CreateOrderDto } from '../dto/create_order.dto';
 import { IProductService } from '../../../products/application/interfaces/product.interface';
 import { IUserService } from '../../../user/domain/user.interface';
 import { NotFoundError } from '../../../core/infrastructure/errors/custom_errors/not_found.error';
+import { ConflictError } from '../../../core/infrastructure/errors/custom_errors/conflict.error';
 
 export class OrderService implements IOrderService {
   constructor(
@@ -32,6 +32,15 @@ export class OrderService implements IOrderService {
   }
 
   async updateOrder(id: string, data: Partial<Order>): Promise<Order> {
+    const order = await this.orderRepository.findById(id);
+    if (!order) throw new NotFoundError('Order not found');
+
+    if (order.order_state === OrderState.CANCELADO) throw new ConflictError('Order is already cancelled');
+
+    if (!Object.values(OrderState).includes(data.order_state as OrderState)) {
+      throw new Error(`Invalid order state: ${data.order_state}`);
+    }
+
     return this.orderRepository.update(id, data);
   }
 
@@ -45,6 +54,12 @@ export class OrderService implements IOrderService {
 
   async updateOrderStatus(id: string, status: string): Promise<Order> {
     // Validamos si el estado proporcionado es válido
+    const order = await this.orderRepository.findById(id);
+    if (!order) throw new NotFoundError('Order not found');
+
+    if (order.order_state === OrderState.CANCELADO)
+      throw new ConflictError('Order is already cancelled');
+
     if (!Object.values(OrderState).includes(status as OrderState)) {
       throw new Error(`Invalid order state: ${status}`);
     }
@@ -60,6 +75,4 @@ export class OrderService implements IOrderService {
       order_state: OrderState.CANCELADO,
     });
   }
-
-  async;
 }
