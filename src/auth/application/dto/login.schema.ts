@@ -25,7 +25,10 @@ export const loginUserSchema = {
       type: 'object',
       properties: {
         error: { type: 'string', example: 'UnauthorizedError' },
-        message: { type: 'string', example: 'Invalid username or password' },
+        message: {
+          type: 'string',
+          example: 'Invalid username or password',
+        },
         statusCode: { type: 'integer', example: 401 },
       },
     },
@@ -34,7 +37,10 @@ export const loginUserSchema = {
       type: 'object',
       properties: {
         error: { type: 'string', example: 'ConflictError' },
-        message: { type: 'string', example: 'User account is deactivated' },
+        message: {
+          type: 'string',
+          example: 'User account is deactivated',
+        },
         statusCode: { type: 'integer', example: 409 },
       },
     },

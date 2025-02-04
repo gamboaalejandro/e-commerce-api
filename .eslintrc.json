@@ -1,40 +1,40 @@
 {
-  "root": true,
-  "env": {
-    "es2020": true,
-    "node": true,
-    "jest": true
-  },
-  "parser": "@typescript-eslint/parser",
-  "parserOptions": {
-    "ecmaVersion": "latest",
-    "sourceType": "module",
-    "project": ["./tsconfig.json"]
-  },
-  "extends": [
-    "eslint:recommended",
-    "plugin:@typescript-eslint/recommended",
-    "plugin:import/recommended",
-    "plugin:import/typescript",
-    "plugin:prettier/recommended"
-  ],
-  "plugins": ["@typescript-eslint", "import", "prettier"],
-  "rules": {
-    "prettier/prettier": "warn",
-    "no-console": "off",
-    "@typescript-eslint/no-explicit-any": "off",
-    "no-debugger": "warn",
-    "eqeqeq": ["error", "always"], // evalua que los condicionales tengas 3 operadores  "==="
-    "no-dupe-else-if": "error", // no permite evaluar la misma condicion mas de una vez
-    "no-eval": "error", // no permite la funcion eval
-    "no-multi-spaces": "error", // no permite multiples espacios continuos
-    "indent": ["error", 4], // define la cantidad de espacio para la identación
-    "semi": ["error", "always"], // Exige punto y coma en todas las declaraciones
-    "no-multiple-empty-lines": ["error", { "max": 1 }], // Define el número máximo de saltos de línea permitidos
-    "no-shadow": "error", // Esta regla previene la declaración de variables que ya están en el ámbito superior, lo que puede causar confusiones y errores
-    "prefer-const": "error", // Fomenta el uso de const para variables que no serán reasignadas después de su declaración, mejorando la claridad y la seguridad.
-    "no-case-declarations": "off", // Permite realizar declaraciones a switch case
-    "no-fallthrough": "off" // Permite la ejecucion en switch case sin breaks
-  },
-  "ignorePatterns": ["node_modules", "dist", "build", "coverage", "prisma"]
+    "root": true,
+    "env": {
+        "es2020": true,
+        "node": true,
+        "jest": true
+    },
+    "parser": "@typescript-eslint/parser",
+    "parserOptions": {
+        "ecmaVersion": "latest",
+        "sourceType": "module",
+        "project": ["./tsconfig.json"]
+    },
+    "extends": [
+        "eslint:recommended",
+        "plugin:@typescript-eslint/recommended",
+        "plugin:import/recommended",
+        "plugin:import/typescript",
+        "plugin:prettier/recommended"
+    ],
+    "plugins": ["@typescript-eslint", "import", "prettier"],
+    "rules": {
+        "prettier/prettier": "warn",
+        "no-console": "off",
+        "@typescript-eslint/no-explicit-any": "off",
+        "no-debugger": "warn",
+        "eqeqeq": ["error", "always"], // evalua que los condicionales tengas 3 operadores  "==="
+        "no-dupe-else-if": "error", // no permite evaluar la misma condicion mas de una vez
+        "no-eval": "error", // no permite la funcion eval
+        "no-multi-spaces": "error", // no permite multiples espacios continuos
+        "indent": "off", // define la cantidad de espacio para la identación
+        "semi": ["error", "always"], // Exige punto y coma en todas las declaraciones
+        "no-multiple-empty-lines": ["error", { "max": 1 }], // Define el número máximo de saltos de línea permitidos
+        "no-shadow": "error", // Esta regla previene la declaración de variables que ya están en el ámbito superior, lo que puede causar confusiones y errores
+        "prefer-const": "error", // Fomenta el uso de const para variables que no serán reasignadas después de su declaración, mejorando la claridad y la seguridad.
+        "no-case-declarations": "off", // Permite realizar declaraciones a switch case
+        "no-fallthrough": "off" // Permite la ejecucion en switch case sin breaks
+    },
+    "ignorePatterns": ["node_modules", "dist", "build", "coverage", "prisma"]
 }

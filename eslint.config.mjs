@@ -12,68 +12,75 @@ import { FlatCompat } from '@eslint/eslintrc';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const compat = new FlatCompat({
-  baseDirectory: __dirname,
-  recommendedConfig: js.configs.recommended,
-  allConfig: js.configs.all,
+    baseDirectory: __dirname,
+    recommendedConfig: js.configs.recommended,
+    allConfig: js.configs.all,
 });
 
 export default [
-  {
-    ignores: [
-      '**/node_modules',
-      '**/dist',
-      '**/build',
-      '**/coverage',
-      '**/prisma',
-    ],
-  },
-  ...fixupConfigRules(
-    compat.extends(
-      'eslint:recommended',
-      'plugin:@typescript-eslint/recommended',
-      'plugin:import/recommended',
-      'plugin:import/typescript',
-      'plugin:prettier/recommended'
-    )
-  ),
-  {
-    plugins: {
-      '@typescript-eslint': fixupPluginRules(typescriptEslint),
-      import: fixupPluginRules(_import),
-      prettier: fixupPluginRules(prettier),
+    {
+        ignores: [
+            '**/node_modules',
+            '**/dist',
+            '**/build',
+            '**/coverage',
+            '**/prisma',
+        ],
     },
+    ...fixupConfigRules(
+        compat.extends(
+            'eslint:recommended',
+            'plugin:@typescript-eslint/recommended',
+            'plugin:import/recommended',
+            'plugin:import/typescript',
+            'plugin:prettier/recommended'
+        )
+    ),
+    {
+        plugins: {
+            '@typescript-eslint': fixupPluginRules(typescriptEslint),
+            import: fixupPluginRules(_import),
+            prettier: fixupPluginRules(prettier),
+        },
 
-    languageOptions: {
-      globals: {
-        ...globals.node,
-        ...globals.jest,
-      },
+        languageOptions: {
+            globals: {
+                ...globals.node,
+                ...globals.jest,
+            },
 
-      parser: tsParser,
-      ecmaVersion: 'latest',
-      sourceType: 'module',
+            parser: tsParser,
+            ecmaVersion: 'latest',
+            sourceType: 'module',
 
-      parserOptions: {
-        project: ['./tsconfig.json'],
-      },
+            parserOptions: {
+                project: ['./tsconfig.json'],
+            },
+        },
+
+        rules: {
+            'prettier/prettier': 'warn',
+            'no-console': 'off',
+            '@typescript-eslint/no-explicit-any': 'off',
+            'no-debugger': 'warn',
+            eqeqeq: ['error', 'always'],
+            'no-dupe-else-if': 'error',
+            'no-eval': 'error',
+            'no-multi-spaces': 'error',
+            indent: 'off',
+            semi: ['error', 'always'],
+
+            'no-multiple-empty-lines': [
+                'error',
+                {
+                    max: 1,
+                },
+            ],
+
+            'no-shadow': 'error',
+            'prefer-const': 'error',
+            'no-case-declarations': 'off',
+            'no-fallthrough': 'off',
+        },
     },
-
-    rules: {
-      'prettier/prettier': 'warn',
-      'no-console': 'off',
-      '@typescript-eslint/no-explicit-any': 'off',
-      'no-debugger': 'warn',
-      eqeqeq: ['error', 'always'], // evalua que los condicionales tengas 3 operadores  "==="
-      'no-dupe-else-if': 'error', // no permite evaluar la misma condicion mas de una vez
-      'no-console': 'warn', // muestra warning en los console logs
-      'no-eval': 'error', // no permite la funcion eval
-      'no-multi-spaces': 'error', // no permite multiples espacios continuos
-      semi: ['error', 'always'], // Exige punto y coma en todas las declaraciones
-      'no-multiple-empty-lines': ['error', { max: 1 }], // Define el número máximo de saltos de línea permitidos
-      'no-shadow': 'error', // Esta regla previene la declaración de variables que ya están en el ámbito superior, lo que puede causar confusiones y errores
-      'prefer-const': 'error', // Fomenta el uso de const para variables que no serán reasignadas después de su declaración, mejorando la claridad y la seguridad.
-      'no-case-declarations': 'off', // Permite realizar declaraciones a switch case
-      'no-fallthrough': 'off', // Permite la ejecucion en switch case sin breaks
-    },
-  },
 ];

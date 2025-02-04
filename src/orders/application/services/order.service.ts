@@ -3,7 +3,6 @@ import { IOrderService } from '../../domain/order.interface';
 import { PaginationDto } from '../../../core/application/dto/pagination.dto';
 import { IOrderRepository } from '../interfaces/order.interface';
 import { OrderState } from '../../domain/order.state';
-import { ProductService } from '../../../products/application/product.service';
 import { CreateOrderDto } from '../dto/create_order.dto';
 import { IProductService } from '../../../products/application/interfaces/product.interface';
 import { IUserService } from '../../../user/domain/user.interface';
@@ -17,7 +16,6 @@ export class OrderService implements IOrderService {
   ) {}
 
   async createOrder(data: CreateOrderDto): Promise<Order> {
-    console.log(data);
     const total_price = await this.productService.getTotalPriceForOrder(
       data.products
     );

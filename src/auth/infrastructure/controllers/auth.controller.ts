@@ -13,7 +13,10 @@ export class AuthController {
         password: string;
       };
 
-      const response = await this.authService.login({ username, password });
+      const response = await this.authService.login({
+        username,
+        password,
+      });
 
       res.status(200).json(response);
     } catch (error) {
